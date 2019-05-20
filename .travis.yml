@@ -1,0 +1,43 @@
+git:
+  quiet: true
+  depth: 1
+language: java
+jdk: openjdk8
+env:
+  global:
+    secure: dqPm1hDCSGVVnXmd2xaxsoHcdOC1c0hbcsau59WjH4hOj6hx+fonHuzgwWfX+mEdqJv/Wtiw6eHAPdKgDmvNw6Ifm1mER5SeKPR/PREsTMrYCmsvomqq5YofwY9m9dtVfOZOvWOBuv60rOEILKeUtQrai2qfqikkFnIx76aFy/2tLOXHZ/LSWh/TdkXulZGpBzVK/sQYLBGao9GY4aBhGYGBQtVpPccyIMlH60/eX/J7ITQtyl/JjJ6obI1haGg+N5fpVyse9FhVSulJ0RTZtPOxXYJdNwLiexxc+NmgQog/sYnqlNLM+3n04b7HAvhxSQyc9aBcE0VliRxAXqtSUARNCvb7M/kk9aC8Hu/fDzVyaxC9L4jPDUrpRx+9r0OVKUyi6/67Yr1T8k4XKY8sFnVNZxxmn1AQSLmrQVdIg0p7tJR4rkCvm9NCnC5egpt1662k8QvHx8e9kRMDBY+btInjl7y0NKQUQih6Hcxn+KWpnQ4/RiTAyKXDkGkkuKPtxZ1ViVrGlM4EBoMvvRgoRGJQwlIBAdTLLyhFnq4OLgUzHh1PS2rO/5H8y7J+ch/G7Owtwo9CzuFBYFOBj/PJe0ryxAG97e+Or9np4xaevgUV+iXYN4WbvSEfbmv8E9OGbj+y0ZqHU51mGJOCtLr9Ap7fHmEYg3fM1NNfauTaZQg=
+install: true
+service:
+  - docker
+addons:
+  apt:
+    packages:
+      - sudo
+      - lsof
+      - wget
+      - bash
+      - curl
+      - docker-ce
+      - python-pip
+      - libappindicator1
+      - fonts-liberation
+      - google-chrome-stable
+before_install:
+  - export CHROME_BIN=/usr/bin/google-chrome
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - sudo pip install docker-compose httpie >/dev/null 2>&1
+  - source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash)
+  - stop_any 80 8001 8002 8080 5432
+script:
+  - ./mvnw docker:start
+  - ./mvnw >/dev/null
+  - java -jar target/*.jar &
+  - wait_for 8080
+  - http :8080/actuator/health
+  - http :8080
+  - http :8080/actuator/info
+  - stop_any 80 8080
+  - ./mvnw docker:stop
+notifications:
+  email: false
