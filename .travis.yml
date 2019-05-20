@@ -41,3 +41,9 @@ script:
   - ./mvnw docker:stop
 notifications:
   email: false
+cache:
+  packages: true
+  pip: true
+  directories:
+    - ~/.m2
+    - ~/.docker
