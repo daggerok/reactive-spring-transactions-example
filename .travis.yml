@@ -17,6 +17,7 @@ addons:
       - wget
       - bash
       - curl
+      - jq
       - docker-ce
       - python-pip
       - libappindicator1
@@ -28,17 +29,20 @@ before_install:
   - sh -e /etc/init.d/xvfb start
   - sudo pip install docker-compose httpie >/dev/null 2>&1
   - source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash)
-  - stop_any 80 8001 8002 8080 5432
-script:
+  - stop_any 80 8001 8002 8080 5432 27017
+before_script:
   - ./mvnw docker:start
-  - ./mvnw >/dev/null
+  - wait_for 27017
+  - ./mvnw
   - java -jar target/*.jar &
   - wait_for 8080
-  - http :8080/actuator/health
-  - http :8080
-  - http :8080/actuator/info
-  - stop_any 80 8080
+script:
+  - http :8080/actuator/health | jq '.'
+  - http :8080 | jq '.'
+  - http :8080/actuator/info | jq '.'
+after_script:
   - ./mvnw docker:stop
+  - stop_any 80 8080 27017
 notifications:
   email: false
 cache:
