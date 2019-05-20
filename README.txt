@@ -1,12 +1,15 @@
 Travis CI: https://travis-ci.org/daggerok/reactive-spring-transactions-example
 
 ./mvnw docker:run
-./mvnw spring-boot:build-info spring-boot:run
+./mvnw ; java -jar target/*.jar
+http :8080
 # ctrl+c
 
-# or:
+# or in dev mode:
 ./mvnw docker:start
-docker rm -f -v mongo-1
+# ...
+./mvnw spring-boot:run # ctrl+c
+./mvnw docker:stop
 
 # other commands:
 ./mvnw docker:stop
