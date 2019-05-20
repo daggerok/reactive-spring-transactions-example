@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
@@ -21,14 +21,11 @@ import reactor.core.publisher.Flux;
 @RequiredArgsConstructor(staticName = "of")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 class MyData {
-  @Id
-  private String id;
-  @NonNull
-  private String body;
+  @Id private String id;
+  @NonNull private String body;
 }
 
 @Repository
-@Transactional
 interface MyDataRepository extends ReactiveMongoRepository<MyData, String> {}
 
 @Component
@@ -53,12 +50,13 @@ class RestApi {
   private final MyDataRepository repository;
 
   @GetMapping
-  Flux<MyData> index() {
+  public Flux<MyData> index() {
     return repository.findAll();
   }
 }
 
 @SpringBootApplication
+@EnableTransactionManagement
 @EnableReactiveMongoRepositories(basePackageClasses = MyData.class)
 public class DemoApplication {
   public static void main(String[] args) {
