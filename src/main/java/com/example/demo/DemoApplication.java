@@ -18,6 +18,7 @@ import reactor.core.publisher.Flux;
 
 @Data
 @Document
+@Setter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor(staticName = "of")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 class MyData {
