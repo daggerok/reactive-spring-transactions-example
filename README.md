@@ -1,5 +1,7 @@
 # reactive-spring-transactions [![Build Status](https://travis-ci.org/daggerok/reactive-spring-transactions-example.svg?branch=master)](https://travis-ci.org/daggerok/reactive-spring-transactions-example)
 
+_run mongo and application_
+
 ```bash
 ./mvnw docker:run
 ./mvnw ; java -jar target/*.jar
@@ -29,3 +31,8 @@ _cleanup_
 ```bash
 ./mvnw -Ddocker.removeMode=all docker:remove
 ```
+
+<!--
+git tag -m 'MongoDB annotation.' mongo-annotation
+git push --tags
+-->
