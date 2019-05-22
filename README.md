@@ -1,4 +1,4 @@
-# reactive-spring-transactions [![Build Status](https://travis-ci.org/daggerok/reactive-spring-transactions-example.svg?branch=master)](https://travis-ci.org/daggerok/reactive-spring-transactions-example)
+# reactive spring transactions [![Build Status](https://travis-ci.org/daggerok/reactive-spring-transactions-example.svg?branch=master)](https://travis-ci.org/daggerok/reactive-spring-transactions-example)
 
 _run mongo and application_
 

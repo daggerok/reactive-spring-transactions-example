@@ -6,19 +6,17 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.2.0.M3</version>
-    <relativePath/> <!-- lookup parent from repository -->
+    <version>2.2.0.BUILD-SNAPSHOT</version>
+    <relativePath/>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.daggerok</groupId>
-  <artifactId>reactive-tx-playground</artifactId>
+  <artifactId>reactive-spring-transactions-example</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <properties>
     <java.version>1.8</java.version>
-    <!-- docker run -d -->
-    <!--<docker.conrainer.mongo.follow>false</docker.conrainer.mongo.follow>-->
   </properties>
 
   <dependencies>
@@ -43,7 +41,7 @@
     <dependency>
       <groupId>io.vavr</groupId>
       <artifactId>vavr</artifactId>
-      <version>RELEASE</version>
+      <version>1.0.0-alpha-2</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -81,7 +79,6 @@
         <artifactId>docker-maven-plugin</artifactId>
         <version>0.30.0</version>
         <configuration>
-          <!-- docker run -d -->
           <follow>false</follow>
           <useColor>true</useColor>
           <keepRunning>false</keepRunning>
@@ -110,25 +107,6 @@
                   <healthy>true</healthy>
                   <kill>500</kill>
                 </wait>
-                <!--<wait>
-                  <http>
-                    <url>http://localhost:${host.port}</url>
-                    <method>GET</method>
-                    <status>200..399</status>
-                  </http>
-                  <time>10000</time>
-                  <shutdown>500</shutdown>
-                  <exec>
-                    <postStart>/opt/init_db.sh</postStart>
-                    <preStop>/opt/notify_end.sh</preStop>
-                  </exec>
-                  <tcp>
-                    <ports>
-                      <port>27017</port>
-                    </ports>
-                  </tcp>
-                  <healthy>true</healthy>
-                </wait>-->
               </run>
             </image>
           </images>
