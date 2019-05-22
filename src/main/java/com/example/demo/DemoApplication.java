@@ -1,20 +1,21 @@
 package com.example.demo;
 
 import lombok.*;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+
+import javax.annotation.PostConstruct;
 
 @Data
 @Document
@@ -22,25 +23,30 @@ import reactor.core.publisher.Flux;
 @RequiredArgsConstructor(staticName = "of")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 class MyData {
-  @Id private String id;
-  @NonNull private String body;
+  @Id
+  private String id;
+  @NonNull
+  private String body;
 }
 
 @Repository
 interface MyDataRepository extends ReactiveMongoRepository<MyData, String> {}
 
-@Component
+@Service
 @RequiredArgsConstructor
-class TestData implements ApplicationRunner {
+class MyDataService {
 
-  private final MyDataRepository myData;
+  @Getter
+  public final MyDataRepository myDataRepository;
 
-  @Override
-  public void run(ApplicationArguments args) throws Exception {
-    Flux.just("one", "two", "three")
-        .map(MyData::of)
-        .flatMap(myData::save)
-        .subscribe(System.out::println);
+  @Transactional
+  public Flux<MyData> saveAll(String... args) {
+    return Flux.just(args)
+               .map(MyData::of)
+               .doOnNext(md -> Assert.isTrue(!md.getBody().contains("invalid"),
+                                             "body should not contains word: invalid"))
+               .flatMap(myDataRepository::save)
+        ;
   }
 }
 
@@ -48,16 +54,21 @@ class TestData implements ApplicationRunner {
 @RequiredArgsConstructor
 class RestApi {
 
-  private final MyDataRepository repository;
+  private final MyDataService myDataService;
+
+  @PostConstruct
+  public void init() {
+    myDataService.saveAll("one", "two", "three")
+                 .subscribe(System.out::println);
+  }
 
   @GetMapping
   public Flux<MyData> index() {
-    return repository.findAll();
+    return myDataService.getMyDataRepository().findAll();
   }
 }
 
 @SpringBootApplication
-@EnableTransactionManagement
 @EnableReactiveMongoRepositories(basePackageClasses = MyData.class)
 public class DemoApplication {
   public static void main(String[] args) {
