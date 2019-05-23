@@ -9,8 +9,8 @@ import reactor.test.StepVerifier;
 
 import static org.junit.Assert.*;
 
-@SpringBootTest
 @RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class MyDataServiceTest {
 
   @Autowired

@@ -19,14 +19,12 @@ import javax.annotation.PostConstruct;
 
 @Data
 @Document
-@Setter(AccessLevel.PROTECTED)
+//@Setter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor(staticName = "of")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 class MyData {
-  @Id
-  private String id;
-  @NonNull
-  private String body;
+  @Id private String id;
+  @NonNull private String body;
 }
 
 @Repository
